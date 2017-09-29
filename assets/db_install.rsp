@@ -34,7 +34,7 @@ oracle.install.option=INSTALL_DB_SWONLY
 # first hostname found on the system. (e.g., for systems with multiple hostnames 
 # and network interfaces)
 #-------------------------------------------------------------------------------
-ORACLE_HOSTNAME=database
+ORACLE_HOSTNAME=localhost
 
 #-------------------------------------------------------------------------------
 # Specify the Unix group to be set for the inventory directory.  
@@ -46,7 +46,7 @@ UNIX_GROUP_NAME=oinstall
 # This is an optional parameter if installing on
 # Windows based Operating System.
 #-------------------------------------------------------------------------------
-INVENTORY_LOCATION=/opt/oracle/oraInventory
+INVENTORY_LOCATION=/u01/app/oraInventory
 
 #-------------------------------------------------------------------------------
 # Specify the languages in which the components will be installed.             
@@ -83,17 +83,17 @@ INVENTORY_LOCATION=/opt/oracle/oraInventory
 # Specify value as the following to select all the languages.
 # Example : SELECTED_LANGUAGES=all_langs  
 #------------------------------------------------------------------------------
-SELECTED_LANGUAGES=en,fr
+SELECTED_LANGUAGES=en,zh_CN
 
 #------------------------------------------------------------------------------
 # Specify the complete path of the Oracle Home.
 #------------------------------------------------------------------------------
-ORACLE_HOME=/opt/oracle/app/product/11.2.0/dbhome_1
+ORACLE_HOME=/u01/app/oracle/product/11.2.0/dbhome_1
 
 #------------------------------------------------------------------------------
 # Specify the complete path of the Oracle Base. 
 #------------------------------------------------------------------------------
-ORACLE_BASE=/opt/oracle/app
+ORACLE_BASE=/u01/app/oracle
 
 #------------------------------------------------------------------------------
 # Specify the installation edition of the component.                        
@@ -186,17 +186,17 @@ oracle.install.db.racOneServiceName=
 #   - GENERAL_PURPOSE/TRANSACTION_PROCESSING             
 #   - DATA_WAREHOUSE                                
 #------------------------------------------------------------------------------
-oracle.install.db.config.starterdb.type=
+oracle.install.db.config.starterdb.type=GENERAL_PURPOSE
 
 #------------------------------------------------------------------------------
 # Specify the Starter Database Global Database Name. 
 #------------------------------------------------------------------------------
-oracle.install.db.config.starterdb.globalDBName=
+oracle.install.db.config.starterdb.globalDBName=orcl
 
 #------------------------------------------------------------------------------
 # Specify the Starter Database SID.
 #------------------------------------------------------------------------------
-oracle.install.db.config.starterdb.SID=
+oracle.install.db.config.starterdb.SID=orcl
 
 #------------------------------------------------------------------------------
 # Specify the Starter Database character set.
@@ -259,7 +259,7 @@ oracle.install.db.config.starterdb.enableSecuritySettings=true
 # This variable holds the password that is to be used for all schemas in the
 # starter database.
 #-------------------------------------------------------------------------------
-oracle.install.db.config.starterdb.password.ALL=
+oracle.install.db.config.starterdb.password.ALL=oracle
 
 #-------------------------------------------------------------------------------
 # Specify the SYS password for the starter database.
@@ -333,7 +333,7 @@ oracle.install.db.config.starterdb.automatedBackup.ospwd=
 #   - FILE_SYSTEM_STORAGE
 #   - ASM_STORAGE
 #------------------------------------------------------------------------------
-oracle.install.db.config.starterdb.storageType=
+oracle.install.db.config.starterdb.storageType=FILE_SYSTEM_STORAGE
 
 #-------------------------------------------------------------------------------
 # Specify the database file location which is a directory for datafiles, control

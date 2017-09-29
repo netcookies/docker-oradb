@@ -464,7 +464,7 @@ SYSTEMPASSWORD = "oracle"
 # Default value : $ORACLE_BASE/oradata
 # Mandatory     : No
 #-----------------------------------------------------------------------------
-DATAFILEDESTINATION=/opt/oracle/app/oradata
+DATAFILEDESTINATION=/u01/app/oracle/oradata
 
 #-----------------------------------------------------------------------------
 # Name          : RECOVERYAREADESTINATION
@@ -474,7 +474,7 @@ DATAFILEDESTINATION=/opt/oracle/app/oradata
 # Default value : $ORACLE_BASE/flash_recovery_area
 # Mandatory     : No
 #-----------------------------------------------------------------------------
-RECOVERYAREADESTINATION=/opt/oracle/app/oradata
+RECOVERYAREADESTINATION=/u01/app/oracle/oradata
 
 #-----------------------------------------------------------------------------
 # Name          : STORAGETYPE
