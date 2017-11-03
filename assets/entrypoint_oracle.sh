@@ -4,7 +4,7 @@ set -e
 source /assets/colorecho
 source ~/.bashrc
 
-alert_log="$ORACLE_BASE/diag/rdbms/orcl/$ORACLE_SID/trace/alert_$ORACLE_SID.log"
+alert_log="$ORACLE_BASE/diag/rdbms/$ORACLE_SID/$ORACLE_SID/trace/alert_$ORACLE_SID.log"
 listener_log="$ORACLE_BASE/diag/tnslsnr/$HOSTNAME/listener/trace/listener.log"
 pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
 
@@ -22,6 +22,8 @@ trap_db() {
 start_db() {
 	echo_yellow "Starting listener..."
 	monitor $listener_log listener &
+        sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/listener.ora;
+        sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/tnsnames.ora;
 	lsnrctl start | while read line; do echo -e "lsnrctl: $line"; done
 	MON_LSNR_PID=$!
 	echo_yellow "Starting database..."
@@ -36,6 +38,14 @@ start_db() {
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 	wait $MON_ALERT_PID
+        for f in /oracle-initdb.d/*; do
+            case "$f" in
+                 *.sh)     echo "$0: running $f"; . "$f" ;;
+                 *.sql)    echo "$0: running $f"; echo "exit" | sqlplus SYS/oracle as SYSDBA @"$f"; echo ;;
+                 *)        echo "$0: ignoring $f" ;;
+            esac
+            echo
+        done
 }
 
 create_db() {
@@ -46,8 +56,9 @@ create_db() {
 	monitor $listener_log listener &
 	#lsnrctl start | while read line; do echo -e "lsnrctl: $line"; done
 	#MON_LSNR_PID=$!
+        echo "START NETCA"
+        netca -silent -responsefile /install/database/response/netca.rsp
         echo "START DBCA"
-        sed -i "40i \ \ \ \ \ \ \ \ \ <initParam name=\"java_jit_enabled\" value=\"false\"/>" /u01/app/oracle/product/11.2.0/dbhome_1/assistants/dbca/templates/General_Purpose.dbc
 	dbca -silent -createDatabase -responseFile /assets/dbca.rsp
 	echo_green "Database created."
 	date "+%F %T"
