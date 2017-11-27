@@ -14,6 +14,11 @@ Then you can commit this container to have installed and configured oracle datab
 docker commit oracle11g oracle11g-installed
 ```
 
+Connect to instance:
+```sh
+sqlcl sys/oracle@localhost:1521:ORCL as sysdba
+```
+
 Database located in **/opt/oracle** folder
 
 OS users:
