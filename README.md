@@ -7,7 +7,7 @@ Download database installation files from [Oracle site](http://www.oracle.com/te
 Run container and it will install oracle and create database:
 
 ```sh
-docker run --privileged --name oracle11g -p 1521:1521 -v <install_folder>:/install jaspeen/oracle-11g
+docker-compose up
 ```
 Then you can commit this container to have installed and configured oracle database:
 ```sh
