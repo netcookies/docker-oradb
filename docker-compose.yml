@@ -3,3 +3,7 @@ version: '2'
 services:
   oradb:
     build: ./
+    volumes:
+      - "/opt/oracle:/install/"
+    ports:
+      - 1521:1521
