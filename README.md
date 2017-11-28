@@ -19,6 +19,11 @@ Connect to instance:
 sqlcl sys/oracle@localhost:1521:ORCL as sysdba
 ```
 
+Connect to container:
+```sh
+docker-compose exec oradb bash
+```
+
 Database located in **/opt/oracle** folder
 
 OS users:
