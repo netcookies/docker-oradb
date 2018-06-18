@@ -23,6 +23,12 @@ Connect to container:
 ```sh
 docker-compose exec oradb bash
 ```
+
+Connect to container with user 'oracle':
+```sh
+docker-compose exec --user oracle oradb bash
+```
+
 Database located in /u01/app/oracle folder.
 ORACLE_HOME=/u01/app/oracle/product/11.2.0/dbhome_1
 
