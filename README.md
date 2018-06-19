@@ -7,7 +7,8 @@ Download database installation files from [Oracle site](http://www.oracle.com/te
 Run container and it will install oracle and create database:
 
 ```sh
-docker-compose up
+docker-compose up -d
+docker-compose logs -f oradb
 ```
 Then you can commit this container to have installed and configured oracle database:
 ```sh
