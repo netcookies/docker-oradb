@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+   db:
+     image: oracle11g-installed
+     ports:
+       - "1521:1521"
+     volumes:
+       - /home/oracle/databases:/opt/databases
+       - /home/oracle/dpdump:/opt/oracle/dpdump
+       - /home/oracle/oracle_install_package/basefile:/opt/basefile
+     restart: always
+     privileged: true

@@ -1,6 +1,18 @@
 Image for running Oracle Database 11g Standard/Enterprise. Due to oracle license restrictions image is not contain database itself and will install it on first run from external directory.
 
-``This image for development use only``
+
+``This image for product use only``
+
+Product environment:
+* CHARACSET = ZHS16GBK
+* MEMORY = 16G
+* PROCESSES = 2000
+
+# Requirement
+
+Docker:
+* Base device size: Recommend 50G ( At leaest 20G )
+* Symbol Link /var/lib/docker to a path which has 100G+ free space
 
 # Usage
 Download database installation files from [Oracle site](http://www.oracle.com/technetwork/database/in-memory/downloads/index.html) and unpack them to **install_folder**.
