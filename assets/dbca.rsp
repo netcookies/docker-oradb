@@ -522,7 +522,7 @@ STORAGETYPE=FS
 # Default value : "US7ASCII"
 # Mandatory     : NO
 #-----------------------------------------------------------------------------
-CHARACTERSET="AL32UTF8"
+CHARACTERSET="ZHS16GBK"
 
 #-----------------------------------------------------------------------------
 # Name          : NATIONALCHARACTERSET
@@ -608,7 +608,7 @@ CHARACTERSET="AL32UTF8"
 # Default value : None
 # Mandatory     : NO
 #-----------------------------------------------------------------------------
-INITPARAMS="memory_target=0,sga_target=500,pga_aggregate_target=100,java_jit_enabled=false"
+INITPARAMS="memory_target=0,sga_target=17179869184,pga_aggregate_target=2147483648,optimizer_index_cost_adj=40,event='10949 trace name context forever, level 1',processes=2000,java_jit_enabled=false"
 
 #-----------------------------------------------------------------------------
 # Name          : SAMPLESCHEMA
