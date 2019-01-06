@@ -99,6 +99,17 @@ change_dpdump_dir () {
 	while read line; do echo -e "sqlplus: $line"; done
 }
 
+optimize_parameters () {
+    echo_green "Optimizing parameters...."
+    sqlplus / as sysdba <<-EOF |
+        alter system set processes=2000 scope=spfile;
+        alter system set sga_target=16G scope=spfile;
+        alter system set event='10949 trace name context forever, level 1' scope=spfile;
+        exit 0
+    EOF
+	while read line; do echo -e "sqlplus: $line"; done
+}
+
 chmod 777 /u01/app/dpdump
 
 echo "Checking shared memory..."
