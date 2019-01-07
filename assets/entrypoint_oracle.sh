@@ -9,6 +9,7 @@ listener_log="$ORACLE_BASE/diag/tnslsnr/$HOSTNAME/listener/trace/listener.log"
 pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
 #processes_val=2000
 #sgatarget_val=16G
+#pgatarget_val=2G
 
 # monitor $logfile
 monitor() {
@@ -107,6 +108,7 @@ optimize_parameters () {
     sqlplus / as sysdba <<-EOF |
         alter system set processes=$processes_val scope=spfile;
         alter system set sga_target=$sgatarget_val scope=spfile;
+        alter system set pga_aggregate_target=$pgatarget_val scope=spfile;
         alter system set event='10949 trace name context forever, level 1' scope=spfile;
         exit 0
     EOF
