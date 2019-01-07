@@ -3,13 +3,10 @@ Image for running Oracle Database 11g Standard/Enterprise. Due to oracle license
 
 ``This image for product use only``
 
-Product environment:
+Product environment (optimization.env):
 * CHARACSET = ZHS16GBK
 * MEMORY = 16G
 * PROCESSES = 2000
-* ALTER SYSTEM SET PROCESSES=2000 SCOPE=SPFILE;
-* ALTER SYSTEM SET SGA_TARGET=16G SCOPE=SPFILE;
-* ALTER SYSTEM SET EVENT='10949 trace name context forever, level 1' SCOPE=SPFILE;
 
 # Requirement
 
