@@ -7,3 +7,5 @@ services:
       - "/opt/oracle:/install/"
     ports:
       - 1521:1521
+    env_file:
+      - optimization.env

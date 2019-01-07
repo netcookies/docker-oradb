@@ -7,6 +7,8 @@ source ~/.bashrc
 alert_log="$ORACLE_BASE/diag/rdbms/$ORACLE_SID/$ORACLE_SID/trace/alert_$ORACLE_SID.log"
 listener_log="$ORACLE_BASE/diag/tnslsnr/$HOSTNAME/listener/trace/listener.log"
 pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
+#processes_val=2000
+#sgatarget_val=16G
 
 # monitor $logfile
 monitor() {
@@ -64,6 +66,7 @@ create_db() {
 	date "+%F %T"
 	change_dpdump_dir
         touch $pfile
+    optimize_parameters
 	trap_db
         kill $MON_ALERT_PID
 	#wait $MON_ALERT_PID
@@ -102,8 +105,8 @@ change_dpdump_dir () {
 optimize_parameters () {
     echo_green "Optimizing parameters...."
     sqlplus / as sysdba <<-EOF |
-        alter system set processes=2000 scope=spfile;
-        alter system set sga_target=16G scope=spfile;
+        alter system set processes=$processes_val scope=spfile;
+        alter system set sga_target=$sgatarget_val scope=spfile;
         alter system set event='10949 trace name context forever, level 1' scope=spfile;
         exit 0
     EOF
