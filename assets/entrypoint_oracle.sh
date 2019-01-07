@@ -13,7 +13,7 @@ pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
 
 # monitor $logfile
 monitor() {
-    tail -F -n 0 $1 | while read line; do echo -e "$2: $line"; done
+	tail -F -n 0 $1 | while read line; do echo -e "$2: $line"; done
 }
 
 
@@ -25,8 +25,8 @@ trap_db() {
 start_db() {
 	echo_yellow "Starting listener..."
 	monitor $listener_log listener &
-        sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/listener.ora;
-        sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/tnsnames.ora;
+		sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/listener.ora;
+		sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/tnsnames.ora;
 	lsnrctl start | while read line; do echo -e "lsnrctl: $line"; done
 	MON_LSNR_PID=$!
 	echo_yellow "Starting database..."
@@ -41,14 +41,14 @@ start_db() {
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 	wait $MON_ALERT_PID
-        for f in /oracle-initdb.d/*; do
-            case "$f" in
-                 *.sh)     echo "$0: running $f"; . "$f" ;;
-                 *.sql)    echo "$0: running $f"; echo "exit" | sqlplus SYS/oracle as SYSDBA @"$f"; echo ;;
-                 *)        echo "$0: ignoring $f" ;;
-            esac
-            echo
-        done
+		for f in /oracle-initdb.d/*; do
+			case "$f" in
+				 *.sh)	 echo "$0: running $f"; . "$f" ;;
+				 *.sql)	echo "$0: running $f"; echo "exit" | sqlplus SYS/oracle as SYSDBA @"$f"; echo ;;
+				 *)		echo "$0: ignoring $f" ;;
+			esac
+			echo
+		done
 }
 
 create_db() {
@@ -59,22 +59,22 @@ create_db() {
 	monitor $listener_log listener &
 	#lsnrctl start | while read line; do echo -e "lsnrctl: $line"; done
 	#MON_LSNR_PID=$!
-        echo "START NETCA"
-        netca -silent -responsefile /install/database/response/netca.rsp
-        echo "START DBCA"
+		echo "START NETCA"
+		netca -silent -responsefile /install/database/response/netca.rsp
+		echo "START DBCA"
 	dbca -silent -createDatabase -responseFile /assets/dbca.rsp
 	echo_green "Database created."
 	date "+%F %T"
 	change_dpdump_dir
-        touch $pfile
-    optimize_parameters
+		touch $pfile
+	optimize_parameters
 	trap_db
-        kill $MON_ALERT_PID
+		kill $MON_ALERT_PID
 	#wait $MON_ALERT_PID
 }
 
 stop() {
-    trap '' SIGINT SIGTERM
+	trap '' SIGINT SIGTERM
 	shu_immediate
 	echo_yellow "Shutting down listener..."
 	lsnrctl stop | while read line; do echo -e "lsnrctl: $line"; done
@@ -104,14 +104,14 @@ change_dpdump_dir () {
 }
 
 optimize_parameters () {
-    echo_green "Optimizing parameters...."
-    sqlplus / as sysdba <<-EOF |
-        alter system set processes=$processes_val scope=spfile;
-        alter system set sga_target=$sgatarget_val scope=spfile;
-        alter system set pga_aggregate_target=$pgatarget_val scope=spfile;
-        alter system set event='10949 trace name context forever, level 1' scope=spfile;
-        exit 0
-    EOF
+	echo_green "Optimizing parameters...."
+	sqlplus / as sysdba <<-EOF |
+		alter system set processes=$processes_val scope=spfile;
+		alter system set sga_target=$sgatarget_val scope=spfile;
+		alter system set pga_aggregate_target=$pgatarget_val scope=spfile;
+		alter system set event='10949 trace name context forever, level 1' scope=spfile;
+		exit 0
+	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 }
 
