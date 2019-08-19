@@ -22,8 +22,8 @@ trap_db() {
 start_db() {
 	echo_yellow "Starting listener..."
 	monitor $listener_log listener &
-		sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/listener.ora;
-		sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/tnsnames.ora;
+    sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/listener.ora;
+    sed -i -E "s/HOST = [^)]+/HOST = $HOSTNAME/g" $ORACLE_HOME/network/admin/tnsnames.ora;
 	lsnrctl start | while read line; do echo -e "lsnrctl: $line"; done
 	MON_LSNR_PID=$!
 	echo_yellow "Starting database..."
@@ -37,15 +37,15 @@ start_db() {
 		exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
-	wait $MON_ALERT_PID
-		for f in /oracle-initdb.d/*; do
-			case "$f" in
-				 *.sh)	 echo "$0: running $f"; . "$f" ;;
-				 *.sql)	echo "$0: running $f"; echo "exit" | sqlplus SYS/oracle as SYSDBA @"$f"; echo ;;
-				 *)		echo "$0: ignoring $f" ;;
-			esac
-			echo
-		done
+    wait $MON_ALERT_PID
+    for f in /oracle-initdb.d/*; do
+        case "$f" in
+            *.sh)	 echo "$0: running $f"; . "$f" ;;
+            *.sql)	echo "$0: running $f"; echo "exit" | sqlplus SYS/oracle as SYSDBA @"$f"; echo ;;
+            *)		echo "$0: ignoring $f" ;;
+        esac
+        echo
+    done
 }
 
 memory_policy() {
@@ -87,17 +87,18 @@ create_db() {
 	monitor $listener_log listener &
 	#lsnrctl start | while read line; do echo -e "lsnrctl: $line"; done
 	#MON_LSNR_PID=$!
-		echo "START NETCA"
-		netca -silent -responsefile /install/database/response/netca.rsp
-		echo "START DBCA"
+    echo "START NETCA"
+    netca -silent -responsefile /install/database/response/netca.rsp
+    echo "START DBCA"
+    memory_policy
 	dbca -silent -createDatabase -responseFile /assets/dbca.rsp
 	echo_green "Database created."
 	date "+%F %T"
 	change_dpdump_dir
-		touch $pfile
-	optimize_parameters
+    touch $pfile
+	#optimize_parameters
 	trap_db
-		kill $MON_ALERT_PID
+    kill $MON_ALERT_PID
 	#wait $MON_ALERT_PID
 }
 
@@ -114,9 +115,9 @@ shu_immediate() {
 	ps -ef | grep ora_pmon | grep -v grep > /dev/null && \
 	echo_yellow "Shutting down the database..." && \
 	sqlplus / as sysdba <<-EOF |
-		set echo on
-		shutdown immediate;
-		exit 0
+        set echo on
+        shutdown immediate;
+        exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 }
@@ -124,9 +125,9 @@ shu_immediate() {
 change_dpdump_dir () {
 	echo_green "Changind dpdump dir to /u01/app/dpdump"
 	sqlplus / as sysdba <<-EOF |
-		create or replace directory data_pump_dir as '/u01/app/dpdump';
-		commit;
-		exit 0
+        create or replace directory data_pump_dir as '/u01/app/dpdump';
+        commit;
+        exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 }
@@ -134,11 +135,11 @@ change_dpdump_dir () {
 optimize_parameters () {
 	echo_green "Optimizing parameters...."
 	sqlplus / as sysdba <<-EOF |
-		alter system set processes=$processes_val scope=spfile;
-		alter system set sga_target=$sgatarget_val scope=spfile;
-		alter system set pga_aggregate_target=$pgatarget_val scope=spfile;
-		alter system set event='10949 trace name context forever, level 1' scope=spfile;
-		exit 0
+        alter system set processes=$processes_val scope=spfile;
+        alter system set sga_target=$sgatarget_val scope=spfile;
+        alter system set pga_aggregate_target=$pgatarget_val scope=spfile;
+        alter system set event='10949 trace name context forever, level 1' scope=spfile;
+        exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 }
