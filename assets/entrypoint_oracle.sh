@@ -63,15 +63,6 @@ memory_policy() {
         PGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.2)}')
         MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
         if [ $MEM_IS_HUGE -gt 0 ]; then
-            SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8)}')
-            HPSIZE_Bytes=$(grep Hugepagesize /proc/meminfo|awk '{print $2*1024}')
-            NUM=$((${SUM_Bytes}/${HPSIZE_Bytes}+100))
-            NUM_KB=$((${NUM}*2*1024))
-            echo "vm.nr_hugepages = ${NUM}">>/etc/sysctl.conf
-            sysctl -p
-            echo "oracle soft memlock ${NUM_KB}">>/etc/security/limits.conf
-            echo "oracle hard memlock ${NUM_KB}">>/etc/security/limits.conf
-            sed -i 's/\<kernel.*$/& transparent_hugepage=never/g' $(find /boot -name grub.conf)
             sed -i "s/^INITPARAMS.*$/INITPARAMS=\"memory_target=0,sga_target=${SGA_Bytes},pga_aggregate_target=${PGA_Bytes},workarea_size_policy=auto,use_large_pages=only,optimizer_index_cost_adj=40,java_jit_enabled=false\"/g" /assets/dbca.rsp
         else
             sed -i "s/^INITPARAMS.*$/INITPARAMS=\"memory_target=0,sga_target=${SGA_Bytes},pga_aggregate_target=${PGA_Bytes},workarea_size_policy=auto,optimizer_index_cost_adj=40,java_jit_enabled=false\"/g" /assets/dbca.rsp
