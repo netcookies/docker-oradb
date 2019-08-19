@@ -7,6 +7,9 @@ Product environment (optimization.env):
 * CHARACSET = ZHS16GBK
 * MEMORY = 16G
 * PROCESSES = 2000
+* kernel.shmall >= shmmax/4kb
+* kernel.shmmax >= SGA
+* eg. as you wanna set SGA = 16G then shmmax = 16G*1024*1024*1024 = 17179869184 and shmall = 16G/4kb = 4194304
 
 # Requirement
 
