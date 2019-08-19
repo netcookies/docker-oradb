@@ -61,7 +61,7 @@ memory_policy() {
     if [ $mm_policy = "asmm" ]; then
         SGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.8)}')
         PGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.2)}')
-        MEM_IS_HUGE= $(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
+        MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
         if [ $MEM_IS_HUGE -gt 0 ]; then
             SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8)}')
             HPSIZE_Bytes=$(grep Hugepagesize /proc/meminfo|awk '{print $2*1024}')
