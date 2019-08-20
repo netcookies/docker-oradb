@@ -7,7 +7,6 @@ source ~/.bashrc
 alert_log="$ORACLE_BASE/diag/rdbms/$ORACLE_SID/$ORACLE_SID/trace/alert_$ORACLE_SID.log"
 listener_log="$ORACLE_BASE/diag/tnslsnr/$HOSTNAME/listener/trace/listener.log"
 pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
-processes_val=${processes_num:-2000}
 
 # monitor $logfile
 monitor() {
@@ -103,12 +102,7 @@ change_dpdump_dir () {
 
 optimize_parameters () {
     echo_green "Optimizing parameters...."
-    sqlplus / as sysdba <<-EOF |
-    alter system set processes=$processes_val scope=spfile;
-    alter system set event='10949 trace name context forever, level 1' scope=spfile;
-    exit 0
-    EOF
-    while read line; do echo -e "sqlplus: $line"; done
+    echo "alter system set event='10949 trace name context forever, level 1' scope=spfile;"|sqlplus -s / as sysdba
     if [ -f /tmp/isasmm ]; then
         echo 'alter system set workarea_size_policy=auto scope=spfile;'|sqlplus -s / as sysdba
         MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
