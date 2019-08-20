@@ -7,6 +7,7 @@ source ~/.bashrc
 alert_log="$ORACLE_BASE/diag/rdbms/$ORACLE_SID/$ORACLE_SID/trace/alert_$ORACLE_SID.log"
 listener_log="$ORACLE_BASE/diag/tnslsnr/$HOSTNAME/listener/trace/listener.log"
 pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
+mm_policy=${memory_policy:-asmm}
 processes_val=${processes_num:-2000}
 
 # monitor $logfile
@@ -47,7 +48,6 @@ start_db() {
         esac
         echo
     done
-    echo 'shutdown immediate;'|sqlplus / as sysdba
 }
 
 create_db() {
@@ -65,7 +65,6 @@ create_db() {
 	echo_green "Database created."
 	date "+%F %T"
 	change_dpdump_dir
-	optimize_parameters
     touch $pfile
 	trap_db
     kill $MON_ALERT_PID
@@ -106,6 +105,10 @@ optimize_parameters () {
     echo_green "Optimizing parameters...."
     echo "alter system set event='10949 trace name context forever, level 1' scope=spfile;"|sqlplus -s / as sysdba
     echo "alter system set processes=${processes_val} scope=spfile;"|sqlplus -s / as sysdba
+}
+
+chose_memory_policy() {
+    /assets/${mm_policy}_memory_policy.sh
 }
 
 chmod 777 /u01/app/dpdump

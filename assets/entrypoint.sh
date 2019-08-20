@@ -3,8 +3,6 @@
 set -e
 source /assets/colorecho
 
-mm_policy=${memory_policy:-asmm}
-
 if [ ! -d "/u01/app/oracle/product/11.2.0/dbhome_1" ]; then
 	echo_yellow "Database is not installed. Installing..."
 	/assets/install.sh
@@ -13,6 +11,13 @@ fi
 rm -f /etc/localtime \
 && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
-su oracle -c "/assets/entrypoint_oracle.sh"
+running_in_docker() {
+    (awk -F: '$3 ~ /docker/' /proc/self/cgroup | read non_empty_input)
+    return $?
+}
 
-/assets/${mm_policy}_memory_policy.sh
+if running_in_docker; then
+    su oracle -c "/assets/entrypoint_oracle.sh"
+else
+    su oracle -c "/assets/install_oracle.sh"
+fi
