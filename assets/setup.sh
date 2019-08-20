@@ -74,6 +74,7 @@ sysctl_and_limits () {
 
 memory_policy() {
     echo_yellow "$mm_policy detected. Setting..."
+    rm -rf /tmp/isasmm
     if [ $mm_policy = "amm" ]; then
         SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*0.8)}')
         TMPFS_Bytes=$(df -k|awk '{if($1~/tmpfs/) print $2*1024}')
