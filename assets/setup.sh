@@ -41,6 +41,14 @@ sysctl_and_limits () {
     sed -i '/.*oracle.*/d' /etc/security/limits.conf
     sed -i 's/ transparent_hugepage=never//g' $(find /boot -name grub.conf)
 
+    if [ $mm_policy = "amm" ]; then
+        SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8)}')
+        TMPFS_Bytes=$(df -k|awk '{if($1~/tmpfs/) print $2*1024}')
+        FIN_MB=$(echo "size=$((${SUM_Bytes}/1024/1024+10))M")
+        sed -i "s|\(^.*/dev/shm.*\)\(defaults\)\(.*$\)|\1\2,${FIN_MB}\3|g" /etc/fstab
+        mount -o remount /dev/shm
+    fi
+
     if [ $mm_policy = "asmm" ]; then
         MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
         if [ $MEM_IS_HUGE -gt 0 ]; then
