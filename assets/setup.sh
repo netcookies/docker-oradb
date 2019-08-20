@@ -80,6 +80,7 @@ memory_policy() {
         FIN_MB=$(echo "size=$((${SUM_Bytes}/1024/1024+10))M")
         sed -i "s|\(^.*/dev/shm.*\)\(defaults\)\(.*$\)|\1\2,${FIN_MB}\3|g" /etc/fstab
         mount -o remount /dev/shm
+	cat "amm" > $ORACLE_HOME/mempolicy
         sed -i "s/^INITPARAMS.*$/INITPARAMS=\"memory_max_target=${SUM_Bytes}K,memory_target=${SUM_Bytes}K,optimizer_index_cost_adj=40,java_jit_enabled=false\"/g" /assets/dbca.rsp
     fi
     if [ $mm_policy = "asmm" ]; then
