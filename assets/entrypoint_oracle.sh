@@ -7,6 +7,7 @@ source ~/.bashrc
 alert_log="$ORACLE_BASE/diag/rdbms/$ORACLE_SID/$ORACLE_SID/trace/alert_$ORACLE_SID.log"
 listener_log="$ORACLE_BASE/diag/tnslsnr/$HOSTNAME/listener/trace/listener.log"
 pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
+processes_val=${processes_num:-2000}
 
 # monitor $logfile
 monitor() {
