@@ -7,6 +7,7 @@ source ~/.bashrc
 alert_log="$ORACLE_BASE/diag/rdbms/$ORACLE_SID/$ORACLE_SID/trace/alert_$ORACLE_SID.log"
 listener_log="$ORACLE_BASE/diag/tnslsnr/$HOSTNAME/listener/trace/listener.log"
 pfile=$ORACLE_HOME/dbs/init$ORACLE_SID.ora
+processes_val=${processes_num:-2000}
 
 # monitor $logfile
 monitor() {
@@ -46,6 +47,7 @@ start_db() {
         esac
         echo
     done
+    echo 'shutdown immediate;'|sqlplus / as sysdba
 }
 
 create_db() {
@@ -63,8 +65,8 @@ create_db() {
 	echo_green "Database created."
 	date "+%F %T"
 	change_dpdump_dir
-    touch $pfile
 	optimize_parameters
+    touch $pfile
 	trap_db
     kill $MON_ALERT_PID
 	#wait $MON_ALERT_PID
@@ -103,13 +105,7 @@ change_dpdump_dir () {
 optimize_parameters () {
     echo_green "Optimizing parameters...."
     echo "alter system set event='10949 trace name context forever, level 1' scope=spfile;"|sqlplus -s / as sysdba
-    if [ -f /tmp/isasmm ]; then
-        echo 'alter system set workarea_size_policy=auto scope=spfile;'|sqlplus -s / as sysdba
-        MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
-        if [ $MEM_IS_HUGE -gt 0 ]; then
-            echo 'alter system set use_large_pages=only scope=spfile;'|sqlplus -s / as sysdba
-        fi
-    fi
+    echo "alter system set processes=${processes_val} scope=spfile;"|sqlplus -s / as sysdba
 }
 
 chmod 777 /u01/app/dpdump

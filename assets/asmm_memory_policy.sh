@@ -35,3 +35,8 @@ echo 'show parameter memory_max_target'|sqlplus -s / as sysdba
 echo 'show parameter sga_target'|sqlplus -s / as sysdba
 echo 'show parameter pga_aggregate_target'|sqlplus -s / as sysdba
 echo 'show parameter workarea_size_policy'|sqlplus -s / as sysdba
+
+MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
+if [ $MEM_IS_HUGE -gt 0 ]; then
+    echo 'alter system set use_large_pages=only scope=spfile;'|sqlplus -s / as sysdba
+fi

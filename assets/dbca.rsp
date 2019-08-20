@@ -608,7 +608,7 @@ CHARACTERSET="ZHS16GBK"
 # Default value : None
 # Mandatory     : NO
 #-----------------------------------------------------------------------------
-INITPARAMS="memory_target=0,sga_target=500,pga_aggregate_target=100,optimizer_index_cost_adj=40,java_jit_enabled=false"
+INITPARAMS="optimizer_index_cost_adj=40,java_jit_enabled=false"
 
 #-----------------------------------------------------------------------------
 # Name          : SAMPLESCHEMA
