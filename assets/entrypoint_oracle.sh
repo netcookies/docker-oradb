@@ -60,7 +60,6 @@ create_db() {
     echo "START NETCA"
     netca -silent -responsefile /install/database/response/netca.rsp
     echo "START DBCA"
-    memory_policy
 	dbca -silent -createDatabase -responseFile /assets/dbca.rsp
 	echo_green "Database created."
 	date "+%F %T"
