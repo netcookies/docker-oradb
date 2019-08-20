@@ -110,6 +110,7 @@ optimize_parameters () {
         EOF
         while read line; do echo -e "sqlplus: $line"; done
         if [ -f /tmp/isasmm ]; then
+            echo 'alter system set workarea_size_policy=auto scope=spfile;'|sqlplus -s / as sysdba
             MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
             if [ $MEM_IS_HUGE -gt 0 ]; then
                 echo 'alter system set use_large_pages=only scope=spfile;'|sqlplus -s / as sysdba
