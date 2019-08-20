@@ -85,6 +85,7 @@ memory_policy() {
     if [ $mm_policy = "asmm" ]; then
         SGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*0.8*0.8)}')
         PGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*0.8*0.2)}')
+	cat "asmm" > $ORACLE_HOME/mempolicy
         sed -i "s/^INITPARAMS.*$/INITPARAMS=\"memory_target=0,sga_target=${SGA_Bytes}K,pga_aggregate_target=${PGA_Bytes}K,workarea_size_policy=auto,optimizer_index_cost_adj=40,java_jit_enabled=false\"/g" /assets/dbca.rsp
     fi
 
