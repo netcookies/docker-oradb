@@ -35,7 +35,8 @@ users () {
 sysctl_and_limits () {
 
     sed -i '/.*oracle.*/d' /etc/security/limits.conf
-	cat /assets/limits.conf >> /etc/security/limits.conf
+    cat /assets/limits.conf >> /etc/security/limits.conf
+    echo "" >> /assets/sysctl.conf
     MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
     if [ $MEM_IS_HUGE -gt 0 ]; then
         SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8)}')
@@ -43,6 +44,7 @@ sysctl_and_limits () {
         NUM=$((${SUM_Bytes}/${HPSIZE_Bytes}+100))
         NUM_KB=$((${NUM}*2*1024))
         echo "vm.nr_hugepages = ${NUM}">>/etc/sysctl.conf
+        echo "" >> /etc/security/limits.conf
         echo "oracle soft memlock ${NUM_KB}">>/etc/security/limits.conf
         echo "oracle hard memlock ${NUM_KB}">>/etc/security/limits.conf
         sed -i 's/\<kernel.*$/& transparent_hugepage=never/g' $(find /boot -name grub.conf)
@@ -52,10 +54,9 @@ sysctl_and_limits () {
     shmall_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2/4)}')
     sed -i '/^kernel.shmmax.*$/d' /assets/sysctl.conf
     sed -i '/^kernel.shmall.*$/d' /assets/sysctl.conf
-    echo "" >> /assets/sysctl.conf
     echo "kernel.shmmax=${shmmax_Bytes}" >> /assets/sysctl.conf
     echo "kernel.shmall=${shmall_Bytes}" >> /assets/sysctl.conf
-	cp /assets/sysctl.conf /etc/sysctl.conf
+    cp /assets/sysctl.conf /etc/sysctl.conf
     sysctl -p
 }
 
