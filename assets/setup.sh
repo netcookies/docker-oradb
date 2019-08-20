@@ -57,7 +57,11 @@ sysctl_and_limits () {
     echo "kernel.shmmax=${shmmax_Bytes}" >> /assets/sysctl.conf
     echo "kernel.shmall=${shmall_Bytes}" >> /assets/sysctl.conf
     cp /assets/sysctl.conf /etc/sysctl.conf
+    
+    sed -i '/^$/d' /assets/sysctl.conf
+    sed -i '/^$/d' /assets/limits.conf
     sysctl -p
+
 }
 
 deps
