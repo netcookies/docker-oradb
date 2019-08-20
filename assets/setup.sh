@@ -35,23 +35,25 @@ users () {
 
 sysctl_and_limits () {
 
-    sed -i '/.*hugepages.*/d' /assets/limits.conf
+    sed -i '/.*hugepages.*/d' /assets/sysctl.conf
     sed -i '/.*memlock.*/d' /assets/limits.conf
     sed -i '/.*oracle.*/d' /etc/security/limits.conf
     sed -i 's/ transparent_hugepage=never//g' $(find /boot -name grub.conf)
 
-    MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
-    if [ $MEM_IS_HUGE -gt 0 ]; then
-        SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8)}')
-        HPSIZE_Bytes=$(grep Hugepagesize /proc/meminfo|awk '{print $2*1024}')
-        NUM=$((${SUM_Bytes}/${HPSIZE_Bytes}+100))
-        NUM_KB=$((${NUM}*2*1024))
-        echo "" >> /assets/sysctl.conf
-        echo "" >> /assets/limits.conf
-        echo "vm.nr_hugepages = ${NUM}">>/assets/sysctl.conf
-        echo "oracle soft memlock ${NUM_KB}">>/assets/limits.conf
-        echo "oracle hard memlock ${NUM_KB}">>/assets/limits.conf
-        sed -i 's/\<kernel.*$/& transparent_hugepage=never/g' $(find /boot -name grub.conf)
+    if [ $mm_policy = "asmm" ]; then
+        MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
+        if [ $MEM_IS_HUGE -gt 0 ]; then
+            SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8)}')
+            HPSIZE_Bytes=$(grep Hugepagesize /proc/meminfo|awk '{print $2*1024}')
+            NUM=$((${SUM_Bytes}/${HPSIZE_Bytes}+100))
+            NUM_KB=$((${NUM}*2*1024))
+            echo "" >> /assets/sysctl.conf
+            echo "" >> /assets/limits.conf
+            echo "vm.nr_hugepages = ${NUM}">>/assets/sysctl.conf
+            echo "oracle soft memlock ${NUM_KB}">>/assets/limits.conf
+            echo "oracle hard memlock ${NUM_KB}">>/assets/limits.conf
+            sed -i 's/\<kernel.*$/& transparent_hugepage=never/g' $(find /boot -name grub.conf)
+        fi
     fi
 
     echo "" >> /assets/sysctl.conf
