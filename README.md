@@ -1,15 +1,10 @@
 Image for running Oracle Database 11g Standard/Enterprise. Due to oracle license restrictions image is not contain database itself and will install it on first run from external directory.
 
 
-``This image for product use only``
+``This image for development use only``
 
 Product environment (optimization.env):
 * CHARACSET = ZHS16GBK
-* MEMORY = 16G
-* PROCESSES = 2000
-* kernel.shmall >= shmmax/4kb
-* kernel.shmmax >= SGA
-* eg. as you wanna set SGA = 16G then shmmax = 16G*1024*1024*1024 = 17179869184 and shmall = 16G/4kb = 4194304
 
 # Requirement
 
