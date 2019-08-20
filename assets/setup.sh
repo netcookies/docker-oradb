@@ -4,6 +4,8 @@ source /assets/colorecho
 trap "echo_red '******* ERROR: Something went wrong.'; exit 1" SIGTERM
 trap "echo_red '******* Caught SIGINT signal. Stopping...'; exit 2" SIGINT
 
+mm_policy=${memory_policy:-asmm}
+
 #Install prerequisites directly without virtual package
 deps () {
 
