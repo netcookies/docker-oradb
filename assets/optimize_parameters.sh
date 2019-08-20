@@ -5,9 +5,9 @@
 processes_val=${processes_num:-2000}
 
 # 首先关闭数据库
-echo 'shutdown immediate;'|sqlplus / as sysdba
+echo 'shutdown immediate;'|sqlplus -s / as sysdba
 
-echo 'startup;'|sqlplus / as sysdba
+echo 'startup;'|sqlplus -s / as sysdba
 echo "alter system set event='10949 trace name context forever, level 1' scope=spfile;"|sqlplus -s / as sysdba
 echo "alter system set processes=${processes_val} scope=spfile;"|sqlplus -s / as sysdba
 
