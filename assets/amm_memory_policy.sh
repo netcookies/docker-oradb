@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
+
+set -e
+source /assets/colorecho
+source ~/.bashrc
+
 #版权声明：本文为CSDN博主「VincentQB」的原创文章，遵循CC 4.0 by-sa版权协议，转载请附上原文出处链接及本声明。
 #原文链接：https://blog.csdn.net/zwjzqqb/article/details/80621713
 
+echo_green "Optimizing Memory use AMM method...."
 # 首先关闭数据库
-echo 'shutdown immediate;'|sqlplus -s / as sysdba
+sqlplus / as sysdba <<-EOF |
+	shutdown immediate;
+	exit 0
+EOF
 
 ## OS和Oracle内存分配依然遵循二八原则
 ## SGA和PGA内存分配也遵循二八原则
@@ -20,7 +29,10 @@ echo 'shutdown immediate;'|sqlplus -s / as sysdba
 
 # 切换到Oracle用户，生成pfile进行编辑设置
 cd $ORACLE_HOME/dbs
-echo 'create pfile from spfile;'|sqlplus -s / as sysdba
+sqlplus / as sysdba <<-EOF |
+	create pfile from spfile;
+	exit 0
+EOF
 mv -v spfile${ORACLE_SID}.ora /tmp/
 
 # 配置pfile
@@ -35,12 +47,18 @@ echo "*.memory_max_target=${SUM_Bytes}">>init${ORACLE_SID}.ora
 echo "*.memory_target=${SUM_Bytes}">>init${ORACLE_SID}.ora
 
 # 启动验证
-echo 'create spfile from pfile;'|sqlplus -s / as sysdba
+sqlplus / as sysdba <<-EOF |
+	create pfile from spfile;
+	exit 0
+EOF
 mv -v init${ORACLE_SID}.ora /tmp/
-echo 'startup;'|sqlplus -s / as sysdba
-echo 'show parameter memory_target'|sqlplus -s / as sysdba
-echo 'show parameter memory_max_target'|sqlplus -s / as sysdba
-echo 'show parameter sga_target'|sqlplus -s / as sysdba
-echo 'show parameter pga_aggregate_target'|sqlplus -s / as sysdba
-echo 'show parameter workarea_size_policy'|sqlplus -s / as sysdba
-
+sqlplus / as sysdba <<-EOF |
+	create pfile from spfile;
+	startup;
+	show parameter memory_target;
+	show parameter memory_max_target;
+	show parameter sga_target;
+	show parameter pga_aggregate_target;
+	show parameter workarea_size_policy;
+	exit 0
+EOF

@@ -33,10 +33,10 @@ start_db() {
 	monitor $alert_log alertlog &
 	MON_ALERT_PID=$!
 	sqlplus / as sysdba <<-EOF |
-        pro Starting with pfile='$pfile' ...
-        startup;
-        alter system register;
-        exit 0
+		pro Starting with pfile='$pfile' ...
+		startup;
+		alter system register;
+		exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
     wait $MON_ALERT_PID
@@ -84,9 +84,9 @@ shu_immediate() {
 	ps -ef | grep ora_pmon | grep -v grep > /dev/null && \
 	echo_yellow "Shutting down the database..." && \
 	sqlplus / as sysdba <<-EOF |
-        set echo on
-        shutdown immediate;
-        exit 0
+		set echo on
+		shutdown immediate;
+		exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 }
@@ -94,9 +94,9 @@ shu_immediate() {
 change_dpdump_dir () {
 	echo_green "Changind dpdump dir to /u01/app/dpdump"
 	sqlplus / as sysdba <<-EOF |
-        create or replace directory data_pump_dir as '/u01/app/dpdump';
-        commit;
-        exit 0
+		create or replace directory data_pump_dir as '/u01/app/dpdump';
+		commit;
+		exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
 }
