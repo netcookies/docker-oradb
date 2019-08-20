@@ -108,13 +108,15 @@ optimize_parameters () {
         alter system set event='10949 trace name context forever, level 1' scope=spfile;
         exit 0
 	EOF
-	MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
-        if [ $MEM_IS_HUGE -gt 0 ]; then
-            sqlplus / as sysdba <<-EOF |
-            alter system set use_large_pages=only scope=spfile;
-            exit 0
-	    EOF
-        fi
+	if [ $(cat $ORACLE_HOME/mempolicy) = "asmm" ]; then
+	    MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
+            if [ $MEM_IS_HUGE -gt 0 ]; then
+                sqlplus / as sysdba <<-EOF |
+                alter system set use_large_pages=only scope=spfile;
+                exit 0
+	        EOF
+            fi
+	fi
 	while read line; do echo -e "sqlplus: $line"; done
 }
 
