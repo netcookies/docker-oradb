@@ -3,7 +3,7 @@
 #原文链接：https://blog.csdn.net/zwjzqqb/article/details/80621713
 
 # 首先关闭数据库
-echo 'shutdown immediate;'|sqlplus / as sysdba
+echo 'shutdown immediate;'|sqlplus -s / as sysdba
 
 # 计算根据当前内存容量SGA和PGA的容量
 SGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.8)}')
@@ -11,7 +11,7 @@ PGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.2)
 
 # 生成pfile，进行配置
 cd $ORACLE_HOME/dbs
-echo 'create pfile from spfile;'|sqlplus / as sysdba
+echo 'create pfile from spfile;'|sqlplus -s / as sysdba
 mv -v spfile${ORACLE_SID}.ora /tmp/
 
 # 配置pfile

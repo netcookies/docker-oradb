@@ -3,7 +3,7 @@
 #原文链接：https://blog.csdn.net/zwjzqqb/article/details/80621713
 
 # 首先关闭数据库
-echo 'shutdown immediate;'|sqlplus / as sysdba
+echo 'shutdown immediate;'|sqlplus -s / as sysdba
 
 ## OS和Oracle内存分配依然遵循二八原则
 ## SGA和PGA内存分配也遵循二八原则
@@ -20,7 +20,7 @@ echo 'shutdown immediate;'|sqlplus / as sysdba
 
 # 切换到Oracle用户，生成pfile进行编辑设置
 cd $ORACLE_HOME/dbs
-echo 'create pfile from spfile;'|sqlplus / as sysdba
+echo 'create pfile from spfile;'|sqlplus -s / as sysdba
 mv -v spfile${ORACLE_SID}.ora /tmp/
 
 # 配置pfile
@@ -35,9 +35,9 @@ echo "*.memory_max_target=${SUM_Bytes}">>init${ORACLE_SID}.ora
 echo "*.memory_target=${SUM_Bytes}">>init${ORACLE_SID}.ora
 
 # 启动验证
-echo 'create spfile from pfile;'|sqlplus / as sysdba
+echo 'create spfile from pfile;'|sqlplus -s / as sysdba
 mv -v init${ORACLE_SID}.ora /tmp/
-echo 'startup;'|sqlplus / as sysdba
+echo 'startup;'|sqlplus -s / as sysdba
 echo 'show parameter memory_target'|sqlplus -s / as sysdba
 echo 'show parameter memory_max_target'|sqlplus -s / as sysdba
 echo 'show parameter sga_target'|sqlplus -s / as sysdba
