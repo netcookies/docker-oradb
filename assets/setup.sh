@@ -52,6 +52,7 @@ sysctl_and_limits () {
     shmall_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2/4)}')
     sed -i '/^kernel.shmmax.*$/d' /assets/sysctl.conf
     sed -i '/^kernel.shmall.*$/d' /assets/sysctl.conf
+    echo "" >> /assets/sysctl.conf
     echo "kernel.shmmax=${shmmax_Bytes}" >> /assets/sysctl.conf
     echo "kernel.shmall=${shmall_Bytes}" >> /assets/sysctl.conf
 	cp /assets/sysctl.conf /etc/sysctl.conf
