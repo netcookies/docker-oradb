@@ -109,7 +109,7 @@ optimize_parameters () {
         exit 0
         EOF
         while read line; do echo -e "sqlplus: $line"; done
-        if [ $(cat $ORACLE_HOME/mempolicy) = "asmm" ]; then
+        if [ -f /tmp/isasmm ]; then
             MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
             if [ $MEM_IS_HUGE -gt 0 ]; then
                 echo 'alter system set use_large_pages=only scope=spfile;'|sqlplus -s / as sysdba
