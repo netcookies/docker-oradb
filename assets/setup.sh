@@ -69,6 +69,29 @@ sysctl_and_limits () {
 
 }
 
+memory_policy() {
+	echo_yellow "$mm_policy detected. Setting..."
+    if [ $mm_policy = "amm" ]; then
+        SUM_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8)}')
+        TMPFS_Bytes=$(df -k|awk '{if($1~/tmpfs/) print $2*1024}')
+        FIN_MB=$(echo "size=$((${SUM_Bytes}/1024/1024+10))M")
+        sed -i "s|\(^.*/dev/shm.*\)\(defaults\)\(.*$\)|\1\2,${FIN_MB}\3|g" /etc/fstab
+        mount -o remount /dev/shm
+        sed -i "s/^INITPARAMS.*$/INITPARAMS=\"memory_max_target=${SUM_Bytes},memory_target=${SUM_Bytes},optimizer_index_cost_adj=40,java_jit_enabled=false\"/g" /assets/dbca.rsp
+    fi
+    if [ $mm_policy = "asmm" ]; then
+        SGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.8)}')
+        PGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.2)}')
+        MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
+        if [ $MEM_IS_HUGE -gt 0 ]; then
+            sed -i "s/^INITPARAMS.*$/INITPARAMS=\"memory_target=0,sga_target=${SGA_Bytes},pga_aggregate_target=${PGA_Bytes},workarea_size_policy=auto,use_large_pages=only,optimizer_index_cost_adj=40,java_jit_enabled=false\"/g" /assets/dbca.rsp
+        else
+            sed -i "s/^INITPARAMS.*$/INITPARAMS=\"memory_target=0,sga_target=${SGA_Bytes},pga_aggregate_target=${PGA_Bytes},workarea_size_policy=auto,optimizer_index_cost_adj=40,java_jit_enabled=false\"/g" /assets/dbca.rsp
+        fi
+    fi
+}
+
 deps
 users
 sysctl_and_limits
+memory_policy
