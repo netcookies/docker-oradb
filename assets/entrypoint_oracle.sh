@@ -32,10 +32,10 @@ start_db() {
 	monitor $alert_log alertlog &
 	MON_ALERT_PID=$!
 	sqlplus / as sysdba <<-EOF |
-		pro Starting with pfile='$pfile' ...
-		startup;
-		alter system register;
-		exit 0
+        pro Starting with pfile='$pfile' ...
+        startup;
+        alter system register;
+        exit 0
 	EOF
 	while read line; do echo -e "sqlplus: $line"; done
     wait $MON_ALERT_PID
@@ -102,20 +102,20 @@ change_dpdump_dir () {
 }
 
 optimize_parameters () {
-        echo_green "Optimizing parameters...."
-        sqlplus / as sysdba <<-EOF |
-        alter system set processes=$processes_val scope=spfile;
-        alter system set event='10949 trace name context forever, level 1' scope=spfile;
-        exit 0
-        EOF
-        while read line; do echo -e "sqlplus: $line"; done
-        if [ -f /tmp/isasmm ]; then
-            echo 'alter system set workarea_size_policy=auto scope=spfile;'|sqlplus -s / as sysdba
-            MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
-            if [ $MEM_IS_HUGE -gt 0 ]; then
-                echo 'alter system set use_large_pages=only scope=spfile;'|sqlplus -s / as sysdba
-            fi
+    echo_green "Optimizing parameters...."
+    sqlplus / as sysdba <<-EOF |
+    alter system set processes=$processes_val scope=spfile;
+    alter system set event='10949 trace name context forever, level 1' scope=spfile;
+    exit 0
+    EOF
+    while read line; do echo -e "sqlplus: $line"; done
+    if [ -f /tmp/isasmm ]; then
+        echo 'alter system set workarea_size_policy=auto scope=spfile;'|sqlplus -s / as sysdba
+        MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
+        if [ $MEM_IS_HUGE -gt 0 ]; then
+            echo 'alter system set use_large_pages=only scope=spfile;'|sqlplus -s / as sysdba
         fi
+    fi
 }
 
 chmod 777 /u01/app/dpdump
