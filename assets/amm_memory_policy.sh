@@ -50,13 +50,12 @@ echo "*.memory_target=${SUM_Bytes}">>init${ORACLE_SID}.ora
 
 # 启动验证
 sqlplus / as sysdba <<-EOF |
-	create pfile from spfile;
+	create spfile from pfile;
 	exit 0
 EOF
 while read line; do echo -e "sqlplus: $line"; done
 mv -v init${ORACLE_SID}.ora /tmp/
 sqlplus / as sysdba <<-EOF |
-	create pfile from spfile;
 	startup;
 	show parameter memory_target;
 	show parameter memory_max_target;
