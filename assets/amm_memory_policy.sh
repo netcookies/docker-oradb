@@ -53,6 +53,7 @@ sqlplus / as sysdba <<-EOF |
 	create pfile from spfile;
 	exit 0
 EOF
+while read line; do echo -e "sqlplus: $line"; done
 mv -v init${ORACLE_SID}.ora /tmp/
 sqlplus / as sysdba <<-EOF |
 	create pfile from spfile;
