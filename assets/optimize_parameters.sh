@@ -14,3 +14,4 @@ sqlplus / as sysdba <<-EOF |
 	alter system set processes=${processes_val} scope=spfile;
 	exit 0
 EOF
+while read line; do echo -e "sqlplus: $line"; done
