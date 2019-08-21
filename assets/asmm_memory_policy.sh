@@ -12,6 +12,7 @@ sqlplus / as sysdba <<-EOF |
 	shutdown immediate;
 	exit 0
 EOF
+while read line; do echo -e "sqlplus: $line"; done
 
 # 计算根据当前内存容量SGA和PGA的容量
 SGA_Bytes=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024*0.8*0.8)}')
@@ -52,6 +53,7 @@ sqlplus / as sysdba <<-EOF |
 	show parameter workarea_size_policy;
 	exit 0
 EOF
+while read line; do echo -e "sqlplus: $line"; done
 
 MEM_IS_HUGE=$(grep 'MemTotal' /proc/meminfo |awk '{printf ("%d\n",$2*1024-64*1024*1024*1024)}')
 if [ $MEM_IS_HUGE -gt 0 ]; then
@@ -60,4 +62,5 @@ if [ $MEM_IS_HUGE -gt 0 ]; then
 		alter system set use_large_pages=only scope=spfile;
 		exit 0
 	EOF
+	while read line; do echo -e "sqlplus: $line"; done
 fi

@@ -108,6 +108,7 @@ optimize_parameters () {
 		alter system set processes=${processes_val} scope=spfile;
 		exit 0
 	EOF
+	while read line; do echo -e "sqlplus: $line"; done
 }
 
 chose_memory_policy() {

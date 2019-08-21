@@ -13,6 +13,7 @@ sqlplus / as sysdba <<-EOF |
 	shutdown immediate;
 	exit 0
 EOF
+while read line; do echo -e "sqlplus: $line"; done
 
 ## OS和Oracle内存分配依然遵循二八原则
 ## SGA和PGA内存分配也遵循二八原则
@@ -33,6 +34,7 @@ sqlplus / as sysdba <<-EOF |
 	create pfile from spfile;
 	exit 0
 EOF
+while read line; do echo -e "sqlplus: $line"; done
 mv -v spfile${ORACLE_SID}.ora /tmp/
 
 # 配置pfile
@@ -62,3 +64,4 @@ sqlplus / as sysdba <<-EOF |
 	show parameter workarea_size_policy;
 	exit 0
 EOF
+while read line; do echo -e "sqlplus: $line"; done
